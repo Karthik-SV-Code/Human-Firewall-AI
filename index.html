@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Firewall AI | Digital Safety Assistant</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deep: '#0B0F14',
+                        surface: '#11161C',
+                        surfaceLight: '#161B22',
+                        textPrimary: '#E6EDF3',
+                        textSecondary: '#9BA3AF',
+                        trustGreen: '#22C55E',
+                        warningAmber: '#F59E0B',
+                        dangerRed: '#EF4444',
+                        cyanGlow: '#06b6d4',
+                        purpleAccent: '#A855F7',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        glowGreen: '0 0 20px rgba(34, 197, 94, 0.25)',
+                        glowRed: '0 0 20px rgba(239, 68, 68, 0.25)',
+                        glowAmber: '0 0 20px rgba(245, 158, 11, 0.25)',
+                        glowCyan: '0 0 20px rgba(6, 182, 212, 0.25)',
+                        glowPurple: '0 0 20px rgba(168, 85, 247, 0.25)',
+                        panel: '0 8px 32px rgba(0, 0, 0, 0.4)',
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 2s infinite linear',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'wave': 'waveform 1.2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        waveform: {
+                            '0%, 100%': { height: '8px' },
+                            '50%': { height: '32px' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen flex flex-col selection:bg-trustGreen/30">
+
+    <nav class="fixed w-full z-50 glass-nav top-0">
+        <div class="max-w-5xl mx-auto px-4 sm:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('analyze')">
+                    <div class="relative w-9 h-9 flex items-center justify-center">
+                        <div class="absolute inset-0 bg-trustGreen opacity-15 blur-lg rounded-full group-hover:opacity-30 transition-all duration-500"></div>
+                        <div class="w-9 h-9 rounded-xl bg-trustGreen/10 border border-trustGreen/25 flex items-center justify-center group-hover:bg-trustGreen/20 transition-colors">
+                            <i data-lucide="shield-check" class="text-trustGreen w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-bold text-base tracking-tight text-white group-hover:text-trustGreen transition-colors leading-none block">Human Firewall <span class="text-trustGreen">AI</span></span>
+                        <span class="text-[10px] text-textSecondary font-medium tracking-wide">Digital Safety Assistant</span>
+                    </div>
+                </div>
+                
+                <!-- Sublte Background Orbs -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+
+    <!-- Navigation -->
+                <div class="hidden sm:flex items-center gap-1 bg-white/[0.04] p-1 rounded-full border border-white/[0.07] shadow-inner">
+                    <button onclick="switchTab('analyze')" id="nav-analyze" class="px-3 md:px-5 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-300 text-deep bg-textPrimary shadow-md scale-105">Analyze</button>
+                    <button onclick="switchTab('intel')" id="nav-intel" class="px-3 md:px-5 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-300 text-textSecondary hover:text-white bg-transparent">Intel Hub</button>
+                    <button onclick="switchTab('shields')" id="nav-shields" class="px-3 md:px-5 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-300 text-textSecondary hover:text-white bg-transparent">Shields</button>
+                    <button onclick="switchTab('tools')" id="nav-tools" class="px-3 md:px-5 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-300 text-textSecondary hover:text-white bg-transparent">Tools</button>
+                    <button onclick="switchTab('simulate')" id="nav-simulate" class="px-3 md:px-5 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-300 text-textSecondary hover:text-white bg-transparent">Simulate</button>
+                    <button onclick="switchTab('train')" id="nav-train" class="px-3 md:px-5 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-300 text-textSecondary hover:text-white bg-transparent">Train</button>
+                </div>
+
+                <!-- Right slot: status indicator -->
+                <div class="hidden sm:flex items-center gap-2">
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-trustGreen/8 border border-trustGreen/15">
+                        <span class="w-1.5 h-1.5 rounded-full bg-trustGreen animate-pulse shadow-[0_0_6px_rgba(34,197,94,0.8)]"></span>
+                        <span class="text-[10px] font-bold text-trustGreen uppercase tracking-widest">AI Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full flex flex-col items-center">
+        
+        <!-- Hero Section -->
+        <div id="heroHeader" class="text-center mb-12 fade-in transition-all duration-500 max-w-2xl mx-auto" style="opacity: 1;">
+            <div class="section-label mb-6 mx-auto"><i data-lucide="shield" class="w-3 h-3 text-trustGreen"></i><span class="text-trustGreen">Digital Defense Console</span></div>
+            <h1 class="text-4xl md:text-5xl font-black mb-4 tracking-tighter leading-tight text-white drop-shadow-sm">
+                Human <span class="text-trustGreen">Firewall</span> AI
+            </h1>
+            <p class="text-sm md:text-base text-textSecondary leading-relaxed max-w-lg mx-auto">
+                Industrial-grade cybersecurity assistant focused on social engineering detection and behavioral threat analysis.
+            </p>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- VIEW: ANALYZE MODE                    -->
+        <!-- ===================================== -->
+        <div id="view-analyze" class="tab-content active show w-full flex-col items-center max-w-3xl border-0">
+            <!-- Analyze Input Card -->
+            <div class="w-full glass-panel rounded-3xl p-7 sm:p-9 relative overflow-hidden noise mb-8" id="analyzeCardContainer">
+                <div class="absolute -top-40 -right-40 w-80 h-80 bg-trustGreen/8 rounded-full blur-[120px] pointer-events-none"></div>
+                
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-trustGreen/12 border border-trustGreen/20 flex items-center justify-center">
+                            <i data-lucide="scan-text" class="w-4 h-4 text-trustGreen"></i>
+                        </div>
+                        <span class="font-semibold text-white text-[15px]">Paste Your Message</span>
+                    </div>
+                    <span class="text-xs text-textSecondary/60 tracking-wide hidden sm:block">We've got your back.</span>
+                </div>
+
+                <textarea id="analyzeInput" rows="5" class="w-full p-5 text-textPrimary placeholder-textSecondary/30 text-sm leading-relaxed mb-5" placeholder="Paste suspicious SMS, email, URL, or news snippet here..."></textarea>
+
+                <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-[10px] text-textSecondary/50 uppercase tracking-widest font-bold">Try:</span>
+                        <button onclick="fillExample('bank')" class="text-xs px-3 py-1.5 rounded-full border border-white/8 bg-white/[0.03] text-textSecondary hover:text-white hover:border-white/15 hover:bg-white/[0.06] transition-all flex items-center gap-1.5">
+                            <i data-lucide="building-2" class="w-3 h-3 text-cyanGlow"></i> Bank Alert
+                        </button>
+                        <button onclick="fillExample('url')" class="text-xs px-3 py-1.5 rounded-full border border-white/8 bg-white/[0.03] text-textSecondary hover:text-white hover:border-white/15 hover:bg-white/[0.06] transition-all flex items-center gap-1.5">
+                            <i data-lucide="link" class="w-3 h-3 text-purpleAccent"></i> Fake URL
+                        </button>
+                        <button onclick="fillExample('netflix')" class="text-xs px-3 py-1.5 rounded-full border border-white/8 bg-white/[0.03] text-textSecondary hover:text-white hover:border-white/15 hover:bg-white/[0.06] transition-all flex items-center gap-1.5">
+                            <i data-lucide="tv" class="w-3 h-3 text-dangerRed"></i> Netflix
+                        </button>
+                    </div>
+                    <button id="analyzeBtn" onclick="runAnalysis()" class="btn-primary px-8 py-3.5 flex items-center justify-center gap-2 text-sm whitespace-nowrap">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Run AI Analysis
+                    </button>
+                </div>
+
+                <!-- Recently Analyzed -->
+                <div class="mt-7 pt-6 border-t border-white/[0.05]">
+                    <p class="text-[10px] font-bold text-textSecondary/50 uppercase tracking-[0.18em] mb-3 flex items-center gap-1.5">
+                        <i data-lucide="history" class="w-3 h-3"></i> Recent Scans
+                    </p>
+                    <div class="space-y-2">
+                        <button onclick="fillExample('friendly')" class="w-full text-left bg-white/[0.025] hover:bg-white/[0.05] p-3.5 rounded-xl border border-white/[0.05] hover:border-white/10 transition-all flex items-center justify-between gap-4 group">
+                            <span class="truncate text-sm text-textSecondary group-hover:text-textPrimary transition-colors">&ldquo;Hey, are you free rn? need a quick favor...&rdquo;</span>
+                            <span class="badge bg-dangerRed/10 border border-dangerRed/20 text-dangerRed shrink-0"><span class="w-1 h-1 bg-dangerRed rounded-full"></span>Scam</span>
+                        </button>
+                        <button onclick="fillExample('delivery')" class="w-full text-left bg-white/[0.025] hover:bg-white/[0.05] p-3.5 rounded-xl border border-white/[0.05] hover:border-white/10 transition-all flex items-center justify-between gap-4 group">
+                            <span class="truncate text-sm text-textSecondary group-hover:text-textPrimary transition-colors">&ldquo;FedEx: Delivery attempt failed for parcel #89304...&rdquo;</span>
+                            <span class="badge bg-warningAmber/10 border border-warningAmber/20 text-warningAmber shrink-0"><span class="w-1 h-1 bg-warningAmber rounded-full"></span>Suspect</span>
+                        </button>
+                    </div>
+                </div>
+                    </div>
+
+            <!-- Intro Features (Unified Bento Style) -->
+            <div id="introFeatures" class="w-full mb-10 stagger-1">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                    <!-- Accuracy Stat (Big Bento) -->
+                    <div class="md:col-span-5 glass-panel rounded-3xl p-8 flex items-center gap-8 relative overflow-hidden group">
+                        <div class="absolute -top-24 -right-24 w-48 h-48 bg-trustGreen/5 rounded-full blur-[60px] group-hover:bg-trustGreen/10 transition-colors"></div>
+                        <div class="trust-ring">
+                            <svg class="trust-ring-svg">
+                                <circle class="trust-ring-bg" cx="40" cy="40" r="36"></circle>
+                                <circle class="trust-ring-fill" cx="40" cy="40" r="36" stroke-dasharray="226" stroke-dashoffset="2"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center text-xl font-black text-trustGreen">99<span class="text-xs opacity-60">%</span></div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-trustGreen uppercase tracking-widest mb-1">Defense Integrity</div>
+                            <h4 class="text-xl font-bold text-white tracking-tight">Industrial-Grade Accuracy</h4>
+                            <p class="text-xs text-textSecondary/60 mt-2 leading-relaxed">Our models are trained on 2 million+ certified social engineering samples.</p>
+                        </div>
+                    </div>
+
+                    <!-- Capability Grid (Right side of Bento) -->
+                    <div class="md:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="glass-panel p-6 rounded-3xl hover:bg-white/[0.02] transition-all group border border-white/[0.05]">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-cyanGlow/10 flex items-center justify-center border border-cyanGlow/20 group-hover:shadow-glowCyan transition-shadow">
+                                    <i data-lucide="microscope" class="w-5 h-5 text-cyanGlow"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm tracking-tight">Behavioral X-Ray</h4>
+                                    <p class="text-[11px] text-textSecondary/60 leading-tight mt-0.5">Scans 42+ psychological locks.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 rounded-3xl hover:bg-white/[0.02] transition-all group border border-white/[0.05]">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-purpleAccent/10 flex items-center justify-center border border-purpleAccent/20 group-hover:shadow-glowPurple transition-shadow">
+                                    <i data-lucide="fingerprint" class="w-5 h-5 text-purpleAccent"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm tracking-tight">Forensic Digital Signature</h4>
+                                    <p class="text-[11px] text-textSecondary/60 leading-tight mt-0.5">Identifies spoofed origins.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 glass-panel p-6 rounded-3xl flex items-center justify-between group border border-white/[0.05] hover:bg-white/[0.02] transition-all">
+                             <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-warningAmber/10 flex items-center justify-center border border-warningAmber/20 group-hover:shadow-glowAmber transition-shadow">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-warningAmber"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm tracking-tight">On-Device Processing</h4>
+                                    <p class="text-[11px] text-textSecondary/60 leading-tight mt-0.5">Your data never leaves the enclave.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5 px-3 py-1 bg-white/[0.03] border border-white/5 rounded-full">
+                                <span class="w-1.5 h-1.5 rounded-full bg-trustGreen animate-pulse"></span>
+                                <span class="text-[10px] font-bold text-textSecondary uppercase tracking-widest">Secure</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden w-full flex-col items-center justify-center py-12">
+                <div class="relative w-24 h-24 mb-8">
+                    <div class="absolute inset-0 border-4 border-surfaceLight rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-trustGreen rounded-full border-t-transparent animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-10 h-10 text-trustGreen animate-pulse"></i>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Take a deep breath. We've got you.</h3>
+                <p class="text-sm text-textSecondary font-medium animate-pulse text-center max-w-sm">Applying behavioral psychology models and evaluating trust metrics...</p>
+            </div>
+
+            <!-- Results Dashboard -->
+            <div id="resultsDashboard" class="hidden w-full flex flex-col gap-0 fade-in">
+                
+                <!-- Chapter 1: The Threat Assessment -->
+                <div class="forensic-chapter stagger-1">
+                    <div class="chapter-header">
+                        <div class="chapter-number">01</div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.25em] text-textSecondary/40">The Threat Assessment</h3>
+                    </div>
+                    
+                    <!-- Verdict Banner -->
+                    <div class="glass-panel rounded-3xl p-8 relative overflow-hidden border border-dangerRed/20 bg-gradient-to-br from-dangerRed/5 to-transparent mb-4 group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i data-lucide="shield-alert" class="w-32 h-32 text-dangerRed"></i>
+                        </div>
+                        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+                            <div class="flex items-center gap-6">
+                                <div class="w-16 h-16 rounded-2xl bg-dangerRed/10 flex items-center justify-center border border-dangerRed/30 shadow-glowRed shrink-0">
+                                    <i data-lucide="alert-octagon" class="w-8 h-8 text-dangerRed"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-2xl font-black text-white tracking-tighter">PHISHING ATTEMPT DETECTED</h4>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span class="badge bg-dangerRed/20 text-dangerRed border border-dangerRed/30">CRITICAL RISK</span>
+                                        <span class="text-xs text-textSecondary font-mono opacity-60">ID: THREAT-902-X</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 bg-white/[0.02] p-4 rounded-2xl border border-white/5">
+                                <div class="text-right">
+                                    <div class="text-[10px] font-bold text-textSecondary uppercase tracking-widest">Confidence Score</div>
+                                    <div class="text-3xl font-black text-dangerRed">96%</div>
+                                </div>
+                                <div class="w-12 h-12 rounded-full border-2 border-dangerRed/30 border-t-dangerRed animate-pulse flex items-center justify-center">
+                                    <i data-lucide="activity" class="w-5 h-5 text-dangerRed"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Core Insight -->
+                    <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-cyanGlow/15 relative overflow-hidden">
+                        <div class="flex items-start gap-4 mb-5 relative z-10">
+                            <div class="w-10 h-10 rounded-xl bg-cyanGlow/10 flex items-center justify-center shrink-0 border border-cyanGlow/25">
+                                <i data-lucide="brain-circuit" class="w-5 h-5 text-cyanGlow"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-cyanGlow uppercase tracking-[0.18em] mb-2 flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3 h-3"></i> AI Core Insight</div>
+                                <p class="text-base text-white font-medium leading-relaxed">&ldquo;The sender engineers an artificial time pressure and financial threat to override your critical thinking.&rdquo;</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-white/[0.05]">
+                            <span class="px-3 py-1.5 bg-dangerRed/10 border border-dangerRed/20 text-dangerRed text-[10px] font-bold rounded-full uppercase tracking-wider">Urgency + Fear</span>
+                            <span class="px-3 py-1.5 bg-purpleAccent/10 border border-purpleAccent/20 text-purpleAccent text-[10px] font-bold rounded-full uppercase tracking-wider">URL Spoofing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter 2: Technical Indicators -->
+                <div class="forensic-chapter stagger-2">
+                    <div class="chapter-header">
+                        <div class="chapter-number">02</div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.25em] text-textSecondary/40">Technical Indicators</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Red Flags Breakdown -->
+                        <div class="glass-panel p-6 rounded-3xl border border-white/[0.05]">
+                            <h4 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                                <i data-lucide="terminal" class="w-4 h-4 text-dangerRed"></i> Forensic Event Log
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="forensic-log-entry border-dangerRed/40">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-[10px] font-bold text-dangerRed uppercase tracking-widest">Mismatch Detected</span>
+                                        <span class="text-[9px] font-mono text-textSecondary/40">T+0.4s</span>
+                                    </div>
+                                    <p class="text-xs text-textSecondary leading-relaxed">Origin domain <span class="text-white font-mono">verify-citi-secure.net</span> contains high-entropy character strings typical of spoofed assets.</p>
+                                </div>
+                                <div class="forensic-log-entry border-warningAmber/40">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-[10px] font-bold text-warningAmber uppercase tracking-widest">Sentiment Analysis</span>
+                                        <span class="text-[9px] font-mono text-textSecondary/40">T+0.9s</span>
+                                    </div>
+                                    <p class="text-xs text-textSecondary leading-relaxed">Aggressive urgency detected. Psychological trigger: <span class="text-white font-bold">Panic Override</span>.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- URL X-Ray Decoder -->
+                        <div id="urlDecoderCard" class="glass-panel p-6 rounded-2xl border border-purpleAccent/15 relative overflow-hidden">
+                            <div class="text-[10px] font-bold text-purpleAccent uppercase tracking-widest mb-4">Forensic URL X-Ray</div>
+                            <div class="bg-black/40 rounded-xl p-4 font-mono text-xs flex flex-wrap gap-1 items-center mb-4">
+                                <span class="text-textSecondary/40">https://</span>
+                                <span class="text-trustGreen">verify-citi</span>
+                                <span class="text-dangerRed font-bold animate-pulse">-secure.net</span>
+                            </div>
+                            <p class="text-[10px] text-textSecondary/60 leading-relaxed">Attackers route traffic through lookalike domains to bypass reputation filters.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter 3: Deep Forensics -->
+                <div class="forensic-chapter stagger-3">
+                    <div class="chapter-header">
+                        <div class="chapter-number">03</div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.25em] text-textSecondary/40">Deep Forensics</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <!-- Trust Score -->
+                        <div class="glass-panel p-6 rounded-2xl border border-white/[0.06]">
+                            <div class="text-[10px] font-bold text-white uppercase tracking-widest mb-5">Trust Metrics</div>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-[9px] font-bold uppercase text-textSecondary/60 tracking-widest">Sender Trust</span>
+                                        <span class="text-[9px] font-bold text-dangerRed">15%</span>
+                                    </div>
+                                    <div class="progress-track h-1.5"><div class="progress-bar-fill bg-dangerRed h-full shadow-glowRed" id="pb-sender" data-target="15%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <span class="text-[9px] font-bold uppercase text-textSecondary/60 tracking-widest">Intent Classification</span>
+                                        <span class="text-[9px] font-bold text-dangerRed">10%</span>
+                                    </div>
+                                    <div class="progress-track h-1.5"><div class="progress-bar-fill bg-dangerRed h-full shadow-glowRed" id="pb-intent" data-target="10%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sender Fingerprint -->
+                        <div class="glass-panel p-6 rounded-2xl border border-white/[0.06]">
+                            <div class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Sender Fingerprint</div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between p-2 rounded-lg bg-white/[0.02]">
+                                    <span class="text-[10px] text-textSecondary">Number Type</span>
+                                    <span class="text-[10px] font-bold text-warningAmber uppercase">Masked</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 rounded-lg bg-white/[0.02]">
+                                    <span class="text-[10px] text-textSecondary">Known Breach DB</span>
+                                    <span class="text-[10px] font-bold text-dangerRed uppercase">Matched</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attack Vector Visualizer -->
+                    <div class="glass-panel p-8 rounded-3xl border border-white/[0.05] relative overflow-hidden bg-white/[0.01]">
+                        <div class="flex justify-between items-center mb-10">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="share-2" class="w-4 h-4 text-warningAmber"></i> Propagation Trace
+                            </h4>
+                            <span class="badge bg-warningAmber/10 text-warningAmber border border-warningAmber/20">Active Discovery</span>
+                        </div>
+                        
+                        <div class="relative flex items-center justify-between px-4 pb-4">
+                            <div class="trace-line"></div>
+                            
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="trace-node border-dangerRed/50 shadow-glowRed mb-3">
+                                    <i data-lucide="database" class="w-4 h-4 text-dangerRed"></i>
+                                </div>
+                                <span class="text-[9px] font-bold text-textSecondary uppercase tracking-tighter">Breach DB</span>
+                            </div>
+
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="trace-node border-warningAmber/50 shadow-glowAmber mb-3">
+                                    <i data-lucide="bot" class="w-4 h-4 text-warningAmber"></i>
+                                </div>
+                                <span class="text-[9px] font-bold text-textSecondary uppercase tracking-tighter">Botnet C2</span>
+                            </div>
+
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="trace-node border-cyanGlow/50 shadow-glowCyan mb-3 animate-pulse">
+                                    <i data-lucide="smartphone" class="w-4 h-4 text-cyanGlow"></i>
+                                </div>
+                                <span class="text-[9px] font-bold text-cyanGlow uppercase tracking-tighter">Delivery</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chapter 4: Defense Strategy -->
+                <div class="forensic-chapter border-none p-0 stagger-4">
+                    <div class="chapter-header">
+                        <div class="chapter-number">04</div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.25em] text-textSecondary/40">Defense Strategy</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                         <!-- Action Plan (Main Bento) -->
+                        <div class="md:col-span-12 glass-panel p-8 rounded-3xl border border-trustGreen/20 bg-gradient-to-br from-trustGreen/5 to-transparent relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <i data-lucide="shield-check" class="w-48 h-48 text-trustGreen"></i>
+                            </div>
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-3 mb-6">
+                                    <div class="w-12 h-12 rounded-xl bg-trustGreen/10 flex items-center justify-center border border-trustGreen/30 shadow-glowGreen">
+                                        <i data-lucide="list-checks" class="w-6 h-6 text-trustGreen"></i>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-white tracking-tight">Mandatory Mitigation Protocol</h4>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                     <div class="flex items-start gap-4 p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-trustGreen/30 transition-colors">
+                                        <span class="w-6 h-6 rounded-lg bg-trustGreen/20 text-trustGreen flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                                        <p class="text-sm text-textSecondary leading-relaxed"><strong class="text-white">Ignore Metadata.</strong> The sender spoofed the "CitiBank" header to bypass your emotional filters.</p>
+                                    </div>
+                                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-trustGreen/30 transition-colors">
+                                        <span class="w-6 h-6 rounded-lg bg-trustGreen/20 text-trustGreen flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                                        <p class="text-sm text-textSecondary leading-relaxed"><strong class="text-white">Isolate Origin.</strong> Block the sender immediately. Report to IT/Bank via official channels only.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div> <!-- End of glass-panel -->
+
+                        <!-- Export & Close -->
+                        <div class="md:col-span-12 flex flex-col md:flex-row items-center justify-between gap-6 mt-4 p-6 glass-panel rounded-3xl border border-white/5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-textSecondary">
+                                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white">Analysis Session Finalized</h4>
+                                    <p class="text-[10px] text-textSecondary uppercase tracking-widest font-medium">Reference: SEC-LOG-4029-X</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 w-full md:w-auto">
+                                <button onclick="resetAnalysis()" class="flex-grow md:flex-grow-0 px-6 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold text-xs transition-all border border-white/10 flex items-center justify-center gap-2">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Clear Report
+                                </button>
+                                <button class="flex-grow md:flex-grow-0 px-8 py-3 bg-cyanGlow/20 hover:bg-cyanGlow/30 text-cyanGlow rounded-xl font-bold text-xs transition-all border border-cyanGlow/30 flex items-center justify-center gap-2 group">
+                                    <i data-lucide="download" class="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform"></i> Export PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div> <!-- End #resultsDashboard -->
+
+        </div> <!-- End view-analyze -->
+
+        <!-- ===================================== -->
+        <!-- VIEW: INTEL HUB                       -->
+        <!-- ===================================== -->
+        <div id="view-intel" class="tab-content w-full flex-col items-center max-w-5xl">
+            <div class="text-center mb-10">
+                <div class="section-label mb-5 mx-auto"><i data-lucide="radar" class="w-3 h-3 text-cyanGlow"></i><span class="text-cyanGlow">Global Telemetry</span></div>
+                <h2 class="text-3xl font-black tracking-tight mb-3 text-white">Threat Intelligence Hub</h2>
+                <p class="text-textSecondary/70 text-sm max-w-xl mx-auto leading-relaxed">Live monitoring of active social engineering campaigns, breached datasets, and global risk indices.</p>
+            </div>
+            
+            <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-5">
+                <!-- Live Campaigns -->
+                <div class="md:col-span-8 glass-panel p-6 sm:p-8 rounded-3xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute -right-32 -top-32 w-64 h-64 bg-dangerRed/5 rounded-full blur-[100px] pointer-events-none transition-colors duration-700"></div>
+                    <div class="flex items-center justify-between mb-6 relative z-10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-dangerRed/10 flex items-center justify-center border border-dangerRed/20 shadow-glowRed">
+                                <i data-lucide="radio" class="w-5 h-5 text-dangerRed animate-pulse"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white tracking-tight">Active Phishing Campaigns</h3>
+                        </div>
+                        <span class="badge bg-dangerRed/10 text-dangerRed border border-dangerRed/20 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-dangerRed animate-pulse"></span>Live</span>
+                    </div>
+                    
+                    <div class="space-y-3 relative z-10">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-white/10 transition-colors gap-4">
+                            <div>
+                                <h4 class="text-sm font-bold text-white mb-1">USPS Delivery Spoofing</h4>
+                                <p class="text-xs text-textSecondary font-mono tracking-tight">Vectors: SMS, iMessage | Targets: North America</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] font-bold text-dangerRed uppercase tracking-widest mb-1">Threat Level</div>
+                                <div class="text-lg font-black text-white">CRITICAL</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-white/10 transition-colors gap-4">
+                            <div>
+                                <h4 class="text-sm font-bold text-white mb-1">Netflix Billing Update Fake</h4>
+                                <p class="text-xs text-textSecondary font-mono tracking-tight">Vectors: Email | Targets: Global</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] font-bold text-warningAmber uppercase tracking-widest mb-1">Threat Level</div>
+                                <div class="text-lg font-black text-white">ELEVATED</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-white/10 transition-colors gap-4">
+                            <div>
+                                <h4 class="text-sm font-bold text-white mb-1">HR Okta Portal Clone</h4>
+                                <p class="text-xs text-textSecondary font-mono tracking-tight">Vectors: Slack, Teams | Targets: Enterprise</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] font-bold text-purpleAccent uppercase tracking-widest mb-1">Threat Level</div>
+                                <div class="text-lg font-black text-white">HIGH</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breach Radar -->
+                <div class="md:col-span-4 flex flex-col gap-5">
+                    <div class="glass-panel p-6 rounded-3xl border border-white/5 h-full flex flex-col relative overflow-hidden">
+                        <div class="flex items-center gap-3 mb-6 relative z-10">
+                            <h3 class="text-sm font-bold text-white tracking-tight flex items-center gap-2"><i data-lucide="database" class="w-4 h-4 text-purpleAccent"></i> Breach Radar</h3>
+                        </div>
+                        <div class="flex-grow flex flex-col justify-center items-center text-center relative z-10">
+                            <div class="text-[10px] font-bold text-textSecondary uppercase tracking-[0.2em] mb-2">Compromised Records (24h)</div>
+                            <div class="text-4xl font-black text-white tracking-tighter mb-4">42.8M</div>
+                            <div class="w-full bg-white/[0.04] p-3 rounded-xl border border-white/5">
+                                <p class="text-[10px] text-textSecondary uppercase tracking-widest mb-1">Top Vector</p>
+                                <p class="text-xs text-purpleAccent font-bold">Misconfigured S3 Buckets</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- VIEW: SHIELDS                         -->
+        <!-- ===================================== -->
+        <div id="view-shields" class="tab-content w-full flex-col items-center max-w-5xl">
+            <div class="text-center mb-10">
+                <div class="section-label mb-5 mx-auto"><i data-lucide="shield-check" class="w-3 h-3 text-trustGreen"></i><span class="text-trustGreen">Protection Console</span></div>
+                <h2 class="text-3xl font-black tracking-tight mb-3 text-white">Active Defenses</h2>
+                <p class="text-textSecondary/70 text-sm max-w-xl mx-auto leading-relaxed">Manage on-device neural networking and browser integrations powering your digital safety.</p>
+            </div>
+            
+            <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Neural Engine -->
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-white/5 relative overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-trustGreen/10 flex items-center justify-center border border-trustGreen/20 shadow-glowGreen">
+                                    <i data-lucide="cpu" class="w-5 h-5 text-trustGreen"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-white tracking-tight">Neural Core</h3>
+                            </div>
+                            <span class="badge bg-trustGreen/10 text-trustGreen border border-trustGreen/20 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-trustGreen animate-pulse"></span>Online</span>
+                        </div>
+
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-[10px] font-bold uppercase text-textSecondary tracking-widest">Local Heuristics DB</span>
+                                    <span class="text-[10px] font-mono text-white">v2.4.9</span>
+                                </div>
+                                <div class="progress-track h-2"><div class="progress-bar-fill bg-trustGreen h-full w-[100%] shadow-glowGreen"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-[10px] font-bold uppercase text-textSecondary tracking-widest">Behavioral Sync</span>
+                                    <span class="text-[10px] font-mono text-white">Just now</span>
+                                </div>
+                                <div class="progress-track h-2"><div class="progress-bar-fill bg-cyanGlow h-full w-[95%] shadow-glowCyan"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-trustGreen/10 border border-trustGreen/20 rounded-xl flex items-start gap-3">
+                        <i data-lucide="lock" class="w-4 h-4 text-trustGreen mt-0.5"></i>
+                        <p class="text-[11px] text-textSecondary leading-relaxed">All data remains strictly encrypted and confined to this sandbox environment.</p>
+                    </div>
+                </div>
+
+                <!-- Integration Toggles -->
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-white/5">
+                    <h3 class="text-sm font-bold text-white tracking-tight flex items-center gap-2 mb-6"><i data-lucide="plug" class="w-4 h-4 text-textSecondary"></i> Enclave Hooks</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-white/10 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="mail" class="w-4 h-4 text-purpleAccent"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-white">Email Sanitizer</div>
+                                    <div class="text-[10px] text-textSecondary tracking-wide mt-0.5">Scans incoming headers</div>
+                                </div>
+                            </div>
+                            <div class="w-10 h-5 bg-trustGreen/20 rounded-full border border-trustGreen/50 flex items-center justify-end px-0.5 shadow-glowGreen cursor-pointer"><div class="w-4 h-4 bg-trustGreen rounded-full shadow-sm"></div></div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-white/10 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="chrome" class="w-4 h-4 text-cyanGlow"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-white">Browser Guardian</div>
+                                    <div class="text-[10px] text-textSecondary tracking-wide mt-0.5">Real-time URL decoding</div>
+                                </div>
+                            </div>
+                            <div class="w-10 h-5 bg-trustGreen/20 rounded-full border border-trustGreen/50 flex items-center justify-end px-0.5 shadow-glowGreen cursor-pointer"><div class="w-4 h-4 bg-trustGreen rounded-full shadow-sm"></div></div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-white/10 transition-colors opacity-50">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="message-circle" class="w-4 h-4 text-textSecondary"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-textSecondary">iMessage Filter</div>
+                                    <div class="text-[10px] text-textSecondary tracking-wide mt-0.5">Permissions required</div>
+                                </div>
+                            </div>
+                            <div class="w-10 h-5 bg-white/5 rounded-full border border-white/10 flex items-center justify-start px-0.5 cursor-pointer"><div class="w-4 h-4 bg-white/20 rounded-full shadow-sm"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- VIEW: TOOLS MODE                      -->
+        <div id="view-tools" class="tab-content w-full flex-col items-center max-w-5xl">
+            <div class="text-center mb-10">
+                <div class="section-label mb-5 mx-auto"><i data-lucide="wrench" class="w-3 h-3 text-cyanGlow"></i><span class="text-cyanGlow">Utility Hub</span></div>
+                <h2 class="text-3xl font-black tracking-tight mb-3 text-white">Expert Security Tools</h2>
+                <p class="text-textSecondary/70 text-sm max-w-xl mx-auto leading-relaxed">Specialized utility modules designed for deep verification across various digital vectors.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+                <div onclick="openToolModal('tool-link')" class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-cyanGlow/30 transition-all cursor-pointer group hover:scale-[1.02]">
+                    <div class="w-10 h-10 rounded-xl bg-cyanGlow/10 flex items-center justify-center mb-5 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-shadow">
+                        <i data-lucide="link" class="w-5 h-5 text-cyanGlow"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 tracking-tight">Link Inspector</h3>
+                    <p class="text-sm text-textSecondary leading-relaxed">Analyze suspicious URLs for hidden redirects, phishing signatures, and SSL validity.</p>
+                </div>
+
+                <div onclick="openToolModal('tool-message')" class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-trustGreen/30 transition-all cursor-pointer group hover:scale-[1.02]">
+                    <div class="w-10 h-10 rounded-xl bg-trustGreen/10 flex items-center justify-center mb-5 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-shadow">
+                        <i data-lucide="message-square" class="w-5 h-5 text-trustGreen"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 tracking-tight">Message X-Ray</h3>
+                    <p class="text-sm text-textSecondary leading-relaxed">Deep-scan SMS, emails, and DMs for emotional triggers and manipulative patterns.</p>
+                </div>
+
+                <div onclick="openToolModal('tool-news')" class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-warningAmber/30 transition-all cursor-pointer group hover:scale-[1.02]">
+                    <div class="w-10 h-10 rounded-xl bg-warningAmber/10 flex items-center justify-center mb-5 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-shadow">
+                        <i data-lucide="newspaper" class="w-5 h-5 text-warningAmber"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 tracking-tight">Fact Sentinel</h3>
+                    <p class="text-sm text-textSecondary leading-relaxed">Verify news headlines and social media claims against verified fact-checking databases.</p>
+                </div>
+
+                <div onclick="openToolModal('tool-code')" class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-purpleAccent/30 transition-all cursor-pointer group hover:scale-[1.02]">
+                    <div class="w-10 h-10 rounded-xl bg-purpleAccent/10 flex items-center justify-center mb-5 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] transition-shadow">
+                        <i data-lucide="code" class="w-5 h-5 text-purpleAccent"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 tracking-tight">Code Guard</h3>
+                    <p class="text-sm text-textSecondary leading-relaxed">Inspect scripts and commands for malicious intent, backdoors, or credential theft.</p>
+                </div>
+
+                <div onclick="openToolModal('tool-trust')" class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-white/30 transition-all cursor-pointer group hover:scale-[1.02] md:col-span-2 lg:col-span-1">
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-5 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-shadow">
+                        <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 tracking-tight">Holistic Trust Score</h3>
+                    <p class="text-sm text-textSecondary leading-relaxed">Generate a comprehensive security profile for any digital interaction or contact.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- VIEW: SIMULATE MODE                   -->
+        <!-- ===================================== -->
+        <div id="view-simulate" class="tab-content w-full flex-col items-center max-w-6xl">
+            <div class="text-center mb-10">
+                <div class="section-label mb-5 mx-auto"><i data-lucide="zap" class="w-3 h-3 text-purpleAccent"></i><span class="text-purpleAccent">Threat Lab</span></div>
+                <h2 class="text-3xl font-black tracking-tight mb-3 text-white">Adversary Simulations</h2>
+                <p class="text-textSecondary/70 text-sm max-w-xl mx-auto leading-relaxed">Experience live phishing and social engineering attacks in a safe, controlled environment.</p>
+            </div>
+            
+            <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Simulation 1: AI Voice Deepfake -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-cyanGlow shadow-panel relative overflow-hidden group">
+                    <div class="absolute -right-32 -top-32 w-64 h-64 bg-cyanGlow/10 rounded-full blur-[100px] pointer-events-none transition-colors duration-700"></div>
+                    
+                    <div class="flex items-center gap-4 mb-6 relative z-10">
+                        <div class="w-12 h-12 rounded-xl bg-cyanGlow/10 flex items-center justify-center border border-cyanGlow/20 shadow-inner">
+                            <i data-lucide="mic" class="w-6 h-6 text-cyanGlow"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white tracking-tight">AI Voice Scam Simulation</h3>
+                            <p class="text-[10px] text-textSecondary uppercase tracking-widest font-bold mt-1">Difficulty: Advanced</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-textPrimary leading-relaxed mb-6 max-w-2xl relative z-10">
+                        Attackers clone a family member's voice using a 3-second audio clip from social media. Listen as the AI dynamically generates panic-inducing speech to bypass logical defense mechanisms.
+                    </p>
+                    
+                    <button id="startSimBtn" onclick="playVoiceScam()" class="px-6 py-3 bg-cyanGlow/20 text-cyanGlow hover:bg-cyanGlow/30 hover:text-white rounded-xl font-bold border border-cyanGlow/30 transition-colors flex items-center gap-3 relative z-10 w-full justify-center">
+                        <i data-lucide="play" class="w-4 h-4"></i> Start Audio Simulation
+                    </button>
+                    
+                    <!-- Sim Active Dashboard -->
+                    <div id="simActiveDashboard" class="hidden flex-col gap-6 mt-6 p-6 bg-deep/80 rounded-xl border border-white/5 relative z-10 w-full fade-in">
+                        <!-- Waveform -->
+                        <div class="flex items-center justify-center gap-1 h-12 w-full mb-2" id="waveformContainer">
+                             <div class="w-2 bg-cyanGlow/40 rounded-full h-2"></div>
+                             <div class="w-2 bg-cyanGlow/60 rounded-full h-8 animate-wave bar-1"></div>
+                             <div class="w-2 bg-cyanGlow/80 rounded-full h-12 animate-wave bar-2"></div>
+                             <div class="w-2 bg-cyanGlow rounded-full h-4 animate-wave bar-3"></div>
+                             <div class="w-2 bg-cyanGlow/80 rounded-full h-10 animate-wave bar-4"></div>
+                             <div class="w-2 bg-cyanGlow/60 rounded-full h-6 animate-wave bar-5"></div>
+                             <div class="w-2 bg-cyanGlow/40 rounded-full h-2"></div>
+                        </div>
+                        
+                        <!-- Live Transcript -->
+                        <div class="relative w-full">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-[10px] text-textSecondary uppercase tracking-widest font-bold flex items-center gap-1.5"><i data-lucide="file-audio-2" class="w-3 h-3"></i> Live Transcription</span>
+                                <span class="text-[10px] text-dangerRed font-bold animate-pulse flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-dangerRed shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span> LIVE</span>
+                            </div>
+                            <div class="bg-surfaceLight p-4 rounded-lg font-mono text-sm leading-relaxed text-textPrimary min-h-[120px] border border-white/5" id="simTranscript"></div>
+                        </div>
+                        
+                        <!-- Emotion Tags -->
+                        <div class="flex flex-wrap gap-2 mt-2" id="simTags"></div>
+
+                        <!-- Reset -->
+                        <button onclick="resetSimulation()" id="resetSimBtn" class="hidden mt-4 text-xs text-textSecondary hover:text-white underline text-center w-full transition-colors flex justify-center fade-in">Reset Simulation</button>
+                    </div>
+                </div>
+                
+                <!-- Simulation 2: Phishing SMS -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-trustGreen shadow-panel relative overflow-hidden group flex flex-col items-center">
+                     <div class="flex items-center gap-4 mb-6 relative z-10 w-full">
+                        <div class="w-12 h-12 rounded-xl bg-trustGreen/10 flex items-center justify-center border border-trustGreen/20 shadow-inner">
+                            <i data-lucide="smartphone" class="w-6 h-6 text-trustGreen"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white tracking-tight">Interactive SMS Phishing</h3>
+                            <p class="text-[10px] text-textSecondary uppercase tracking-widest font-bold mt-1">Difficulty: Intermediate</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-textPrimary leading-relaxed mb-6 w-full relative z-10 text-left">
+                        Analyze how attackers spoof caller IDs and use psychological triggers like Authority + Urgency to force immediate action via text messaging.
+                    </p>
+                    
+                    <div class="bg-surface/80 rounded-[2rem] p-4 relative border-[6px] border-surfaceLight shadow-2xl max-w-sm w-full mx-auto flex-grow flex flex-col mt-4">
+                        <!-- Phone Header -->
+                        <div class="flex justify-center mb-6 pb-4 border-b border-white/10 mt-4">
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="building-2" class="w-5 h-5 text-white"></i></div>
+                                <span class="text-xs font-bold text-white tracking-widest uppercase">CitiBank Alert</span>
+                                <span class="text-[10px] text-textSecondary">Text Message</span>
+                            </div>
+                        </div>
+                        <!-- Bubbles -->
+                        <div class="flex flex-col gap-3 flex-grow">
+                            <div class="text-center font-mono text-[10px] text-textSecondary mb-2 uppercase">Yesterday 4:12 PM</div>
+                            <div class="self-start text-[13px] bg-white text-surface py-3 px-4 rounded-2xl shadow-md relative max-w-[90%] rounded-bl-sm text-left">
+                                Your recent login from an unrecognized device was blocked. To maintain bank access, verify your identity here: <br/><br/><span class="text-cyan-700 underline font-medium cursor-pointer" onclick="switchTab('analyze'); fillExample('bank'); setTimeout(runAnalysis, 300);">http://verify-citi-secure.net/auth</span>
+                            </div>
+                        </div>
+                        <!-- Analyze btn -->
+                        <button onclick="switchTab('analyze'); fillExample('bank'); setTimeout(runAnalysis, 300);" class="w-full mt-8 py-3 bg-trustGreen hover:bg-trustGreen/90 text-surface rounded-xl font-bold text-sm transition-colors shadow-glowGreen flex items-center justify-center gap-2">
+                             <i data-lucide="microscope" class="w-4 h-4"></i> Run AI Scanner
+                        </button>
+                    </div>
+                </div>
+                <!-- Simulation 3: Business Email Compromise (BEC) -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-warningAmber shadow-panel relative overflow-hidden group flex flex-col items-center">
+                    <div class="flex items-center gap-4 mb-6 relative z-10 w-full">
+                        <div class="w-12 h-12 rounded-xl bg-warningAmber/10 flex items-center justify-center border border-warningAmber/20 shadow-inner">
+                            <i data-lucide="mail-warning" class="w-6 h-6 text-warningAmber"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white tracking-tight">Executive Urgency (BEC)</h3>
+                            <p class="text-[10px] text-textSecondary uppercase tracking-widest font-bold mt-1">Difficulty: Hard</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-textPrimary leading-relaxed mb-6 w-full relative z-10 text-left">
+                        A C-level executive supposedly emails you urgently requiring a wire transfer. Experience how attackers bypass email filters with domain spoofing.
+                    </p>
+                    <div class="bg-surface/80 rounded-xl p-4 relative border-[1px] border-white/10 shadow-lg w-full flex-grow flex flex-col mt-4 isolate overflow-hidden">
+                        <div class="flex justify-between items-start border-b border-white/5 pb-3 mb-3">
+                            <div>
+                                <div class="text-xs text-white font-bold">CEO <ceo@c0mpany-inc.com></div>
+                                <div class="text-[10px] text-textSecondary">To: Finance Team</div>
+                            </div>
+                            <div class="text-[10px] text-textSecondary">10:42 AM</div>
+                        </div>
+                        <div class="text-xs text-textPrimary leading-relaxed mb-4">
+                            Please process this wire transfer immediately for the new vendor acquisition. They need it by noon. Invoice attached. Do not call me, I am in a board meeting.<br><br>- CEO
+                        </div>
+                        <button onclick="switchTab('analyze'); document.getElementById('analyzeInput').value = 'Please process this wire transfer immediately for the new vendor acquisition. They need it by noon. Invoice attached. Do not call me, I am in a board meeting.'; setTimeout(runAnalysis, 300);" class="w-full mt-auto py-3 bg-warningAmber/20 hover:bg-warningAmber/30 text-warningAmber rounded-xl font-bold text-sm transition-colors border border-warningAmber/30 flex items-center justify-center gap-2">
+                             <i data-lucide="scan-line" class="w-4 h-4"></i> Analyze Headers
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Simulation 4: Malicious Download -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-purpleAccent shadow-panel relative overflow-hidden group flex flex-col items-center">
+                    <div class="flex items-center gap-4 mb-6 relative z-10 w-full">
+                        <div class="w-12 h-12 rounded-xl bg-purpleAccent/10 flex items-center justify-center border border-purpleAccent/20 shadow-inner">
+                            <i data-lucide="file-question" class="w-6 h-6 text-purpleAccent"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white tracking-tight">Ransomware Drop</h3>
+                            <p class="text-[10px] text-textSecondary uppercase tracking-widest font-bold mt-1">Difficulty: Intermediate</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-textPrimary leading-relaxed mb-4 w-full relative z-10 text-left">
+                        Can you spot the dangerous file extension? Attackers disguise executables as normal PDFs or Word documents. 
+                    </p>
+                    <div class="w-full bg-deep/80 rounded-xl border border-white/5 p-4 flex flex-col items-center justify-center mt-auto gap-3">
+                        <i data-lucide="folder-open" class="w-10 h-10 text-textSecondary mb-2"></i>
+                        <div class="flex items-center gap-2 bg-surfaceLight px-4 py-2 rounded border border-white/10 hover:border-dangerRed/50 transition-colors w-full cursor-pointer group" onclick="switchTab('analyze'); document.getElementById('analyzeInput').value = 'Downloaded file: Q3_Financial_Report.pdf.exe. Analysis indicates self-extracting payload.'; setTimeout(runAnalysis, 300);">
+                            <i data-lucide="file-text" class="w-4 h-4 text-white group-hover:text-dangerRed transition-colors"></i>
+                            <span class="text-xs text-white font-mono group-hover:text-dangerRed transition-colors truncate">Q3_Financial_Report.pdf.exe</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-surfaceLight px-4 py-2 rounded border border-white/10 hover:border-trustGreen/50 transition-colors w-full cursor-pointer group" onclick="switchTab('analyze'); document.getElementById('analyzeInput').value = 'Downloaded file: Q3_Financial_Report.pdf. Analysis indicates standard document.'; setTimeout(runAnalysis, 300);">
+                            <i data-lucide="file-text" class="w-4 h-4 text-white group-hover:text-trustGreen transition-colors"></i>
+                            <span class="text-xs text-white font-mono group-hover:text-trustGreen transition-colors truncate">Q3_Financial_Report.pdf</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulation 5: Attack Builder -->
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-dangerRed shadow-panel relative overflow-hidden group md:col-span-2 w-full mt-2">
+                    <div class="flex items-center gap-4 mb-6 relative z-10 w-full">
+                        <div class="w-12 h-12 rounded-xl bg-dangerRed/10 flex items-center justify-center border border-dangerRed/20 shadow-inner shrink-0">
+                            <i data-lucide="hammer" class="w-6 h-6 text-dangerRed"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white tracking-tight">"Flip the Script" Attack Compiler</h3>
+                            <p class="text-[10px] text-textSecondary uppercase tracking-widest font-bold mt-1">Difficulty: Expert</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-textPrimary leading-relaxed mb-6 max-w-3xl relative z-10 text-left">
+                        Step into the hacker's shoes. Choose standard psychological templates and let the AI instantly compile a devastatingly convincing phishing attack.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative z-10">
+                        <div>
+                           <label class="block text-xs font-bold text-textSecondary uppercase tracking-widest mb-2 flex items-center gap-1.5"><i data-lucide="target" class="w-3 h-3"></i> 1. Target</label>
+                           <select id="builderTarget" class="w-full bg-deep/60 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-dangerRed/50 focus:outline-none appearance-none cursor-pointer hover:border-white/20 transition-colors shadow-inner">
+                                <option value="employee">Remote Employee</option>
+                                <option value="senior">Elderly Relative</option>
+                                <option value="shopper">Online Shopper</option>
+                           </select>
+                        </div>
+                        <div>
+                           <label class="block text-xs font-bold text-textSecondary uppercase tracking-widest mb-2 flex items-center gap-1.5"><i data-lucide="brain" class="w-3 h-3"></i> 2. Emotion</label>
+                           <select id="builderEmotion" class="w-full bg-deep/60 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-dangerRed/50 focus:outline-none appearance-none cursor-pointer hover:border-white/20 transition-colors shadow-inner">
+                                <option value="fear">Fear / Panic</option>
+                                <option value="greed">Greed / Reward</option>
+                                <option value="help">Desire to Help</option>
+                           </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="compileAttack()" class="w-full py-3 bg-dangerRed hover:bg-dangerRed/90 text-white rounded-xl font-bold text-sm transition-colors shadow-glowRed flex items-center justify-center gap-2">
+                                <i data-lucide="terminal-square" class="w-4 h-4"></i> Compile Threat
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Compiled Output -->
+                    <div id="builderOutput" class="hidden bg-surfaceLight/80 p-6 rounded-xl border border-dangerRed/20 relative shadow-inner fade-in mt-2 z-10">
+                        <div class="absolute top-0 right-0 w-8 h-8 bg-dangerRed/20 flex items-center justify-center rounded-bl-xl border-l border-b border-dangerRed/20"><i data-lucide="cpu" class="w-3 h-3 text-dangerRed"></i></div>
+                        <h4 class="text-[10px] font-bold text-dangerRed uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Compiled AI Phishing Payload</h4>
+                        <div class="bg-deep/80 p-5 rounded-lg border border-white/5 relative">
+                             <p id="compiledPayloadText" class="text-sm text-textPrimary font-mono leading-relaxed"></p>
+                             <button onclick="switchTab('analyze'); document.getElementById('analyzeInput').value = document.getElementById('compiledPayloadText').innerText; setTimeout(runAnalysis, 300);" class="absolute bottom-3 right-3 text-[10px] bg-dangerRed/20 hover:bg-dangerRed/30 text-dangerRed px-2 py-1 rounded border border-dangerRed/30 flex items-center gap-1 font-bold transition-colors">Analyze <i data-lucide="arrow-right" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- VIEW: TRAIN MODE                      -->
+        <!-- ===================================== -->
+        <div id="view-train" class="tab-content w-full flex-col max-w-4xl items-center">
+            <div class="text-center mb-10 w-full">
+                <div class="section-label mb-5 mx-auto"><i data-lucide="swords" class="w-3 h-3 text-trustGreen"></i><span class="text-trustGreen">Reflex Training</span></div>
+                <h2 class="text-3xl font-black tracking-tight mb-3 text-white">Security Instinct Arena</h2>
+                <p class="text-textSecondary/70 text-sm max-w-xl mx-auto leading-relaxed">Build muscle memory. Rapidly identify threats vs safe messages. earn XP and streaks.</p>
+            </div>
+            
+            <div class="w-full max-w-sm mx-auto relative h-[450px]" id="swipeDeckContainer">
+                
+                <!-- Score UI -->
+                <div class="flex justify-between items-center bg-surfaceLight p-4 rounded-2xl border border-white/5 mb-8 shadow-md">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-textSecondary flex items-center gap-2"><i data-lucide="star" class="w-4 h-4 text-trustGreen"></i> XP: <span id="swipeScore" class="text-sm font-bold text-white">0</span></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-textSecondary flex items-center gap-2"><i data-lucide="flame" class="w-4 h-4 text-warningAmber"></i> Streak: <span id="swipeStreak" class="text-sm font-bold text-white">0</span></span>
+                </div>
+
+                <!-- Card Deck Area -->
+                <div class="relative w-full h-[280px]" id="swipeCardsArea">
+                    <!-- Cards will be injected dynamically -->
+                </div>
+                
+                <!-- Controls -->
+                <div class="flex justify-center gap-8 mt-10">
+                    <button onclick="handleSwipe('phish')" class="w-16 h-16 rounded-full bg-surfaceLight hover:bg-dangerRed/10 border-2 border-dangerRed/40 text-dangerRed flex items-center justify-center transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:scale-110 group"><i data-lucide="x" class="w-8 h-8 group-hover:scale-110 transition-transform drop-shadow"></i></button>
+                    <button onclick="handleSwipe('safe')" class="w-16 h-16 rounded-full bg-surfaceLight hover:bg-trustGreen/10 border-2 border-trustGreen/40 text-trustGreen flex items-center justify-center transition-all shadow-[0_0_15px_rgba(34,197,94,0.2)] hover:scale-110 group"><i data-lucide="check" class="w-8 h-8 group-hover:scale-110 transition-transform drop-shadow"></i></button>
+                </div>
+            </div>
+            
+            <!-- End Screen -->
+            <div id="swipeEndScreen" class="hidden w-full max-w-sm mx-auto flex-col items-center bg-surfaceLight border border-trustGreen/20 p-8 rounded-3xl shadow-[0_0_30px_rgba(34,197,94,0.1)] mt-8 fade-in relative overflow-hidden text-center z-10">
+                 <div class="absolute -top-32 -left-32 w-64 h-64 bg-trustGreen/10 rounded-full blur-[80px]"></div>
+                 <i data-lucide="trophy" class="w-16 h-16 text-warningAmber mb-4 relative z-10 animate-bounce"></i>
+                 <h3 class="text-2xl font-black text-white mb-2 relative z-10 tracking-tight">Training Complete!</h3>
+                 <p class="text-sm text-textSecondary mb-8 relative z-10">You've leveled up your Security Instinct.</p>
+                 <div class="bg-deep border border-white/5 p-6 rounded-2xl w-full mb-8 relative z-10">
+                     <div class="text-[10px] font-bold uppercase tracking-widest text-textSecondary mb-2">Total XP Earned</div>
+                     <div class="text-5xl font-extrabold text-trustGreen tracking-tighter"><span id="finalScoreDisplay">0</span></div>
+                 </div>
+                 <button onclick="resetSwipeGame()" class="w-full py-4 bg-trustGreen/20 hover:bg-trustGreen/30 text-trustGreen rounded-xl font-bold text-sm transition-colors shadow-inner flex items-center justify-center gap-3 relative z-10">
+                     <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Train Again
+                 </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-white/[0.05] mt-4">
+        <div class="max-w-5xl mx-auto px-4 sm:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-trustGreen/10 border border-trustGreen/20 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-trustGreen"></i>
+                </div>
+                <span class="text-sm font-semibold text-white">Human Firewall <span class="text-trustGreen">AI</span></span>
+            </div>
+            <p class="text-xs text-textSecondary/40 text-center">
+                Built for GDG Hackathon &bull; Protecting digital safety through AI &bull; 2024
+            </p>
+            <div class="flex items-center gap-1.5 text-xs text-textSecondary/40">
+                <span class="w-1.5 h-1.5 rounded-full bg-trustGreen animate-pulse"></span>
+                All analysis runs locally
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===================================== -->
+    <!-- MODAL FOR TOOLS                       -->
+    <!-- ===================================== -->
+    <div id="toolModalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center bg-deep/80 backdrop-blur-md p-4 opacity-0 transition-opacity duration-500 ease-out">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl shadow-panel border border-white/10 relative overflow-hidden transform scale-95 translate-y-4 opacity-0 transition-all duration-500 ease-out" id="toolModalContent">
+            
+            <button onclick="closeToolModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-surfaceLight hover:bg-white/10 text-textSecondary hover:text-white transition-colors z-20 shadow-lg border border-white/5">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="p-6 sm:p-8 relative z-10 w-full min-h-[400px] flex flex-col justify-center">
+                
+                <!-- TOOL 1: Link Safety Checker -->
+                <div id="tool-link" class="modal-tool-view w-full">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-lg bg-cyanGlow/10 flex items-center justify-center text-cyanGlow border border-cyanGlow/20"><i data-lucide="link-2" class="w-5 h-5"></i></div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">Link Safety Checker</h2>
+                    </div>
+                    <!-- Detailed Description -->
+                    <p class="text-sm text-textSecondary mb-6 ml-14 max-w-md leading-relaxed">
+                        This tool deeply scans URLs against known phishing databases. It analyzes DNS routing, SSL certificate validity, and flags common domain spoofing techniques like homographs before you click.
+                    </p>
+                    
+                    <div id="tool-link-input-view" class="w-full">
+                        <div class="mb-4">
+                            <input type="text" id="tool-link-input" class="w-full bg-deep/60 border border-surfaceLight rounded-xl p-4 text-textPrimary placeholder-textSecondary/40 focus:outline-none focus:border-cyanGlow/50 font-mono text-sm shadow-inner" placeholder="https://example.com/login">
+                        </div>
+                        <button onclick="runToolScan('link')" class="w-full py-3.5 bg-cyanGlow/20 text-cyanGlow hover:bg-cyanGlow/30 hover:text-white rounded-xl font-bold border border-cyanGlow/30 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="search" class="w-4 h-4"></i> Deep Scan Link
+                        </button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="tool-link-loading" class="hidden flex-col items-center justify-center py-12">
+                        <i data-lucide="loader-2" class="w-10 h-10 text-cyanGlow animate-spin mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-1">Analyzing...</h3>
+                        <p class="text-sm text-textSecondary font-medium animate-pulse">Checking domain registrar and blacklists...</p>
+                    </div>
+
+                    <div id="tool-link-result" class="hidden flex-col gap-4 fade-in">
+                        <div class="bg-dangerRed/10 border border-dangerRed/20 rounded-xl p-6">
+                            <div class="flex items-center gap-3 mb-3 pb-3 border-b border-dangerRed/10">
+                                <i data-lucide="alert-triangle" class="w-6 h-6 text-dangerRed"></i>
+                                <h3 class="text-dangerRed font-bold text-xl">Danger: Suspicious Redirect</h3>
+                            </div>
+                            <p class="text-sm text-textPrimary leading-relaxed mb-4">This domain uses an unauthorized SSL certificate and mimics a legitimate login portal.</p>
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-textSecondary mb-3">Recommended Actions</h4>
+                            <ul class="text-sm text-textPrimary space-y-2.5">
+                                <li class="flex items-center gap-2"><i data-lucide="mouse-pointer-click" class="w-4 h-4 text-dangerRed"></i> <strong>Do not open</strong> this URL.</li>
+                            </ul>
+                        </div>
+                        <button onclick="resetToolScan('link')" class="w-full py-3 bg-surfaceLight hover:bg-white/10 text-white rounded-lg font-bold transition-colors border border-white/10 text-sm flex items-center justify-center gap-2">Scan Another Link</button>
+                    </div>
+                </div>
+
+                <!-- TOOL 2: Message Scanner -->
+                <div id="tool-message" class="modal-tool-view w-full">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-lg bg-trustGreen/10 flex items-center justify-center text-trustGreen border border-trustGreen/20"><i data-lucide="message-square-dashed" class="w-5 h-5"></i></div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">Message Scanner</h2>
+                    </div>
+                    <!-- Detailed Description -->
+                    <p class="text-sm text-textSecondary mb-6 ml-14 max-w-md leading-relaxed">
+                        A rapid NLP checker configured for SMS and direct messages. It parses sentence structure to identify commanding tones, artificial deadlines, and unauthorized requests for personal information.
+                    </p>
+                    
+                    <div id="tool-message-input-view" class="w-full">
+                        <div class="mb-4">
+                            <textarea id="tool-message-input" class="w-full h-32 bg-deep/60 border border-surfaceLight rounded-xl p-4 text-textPrimary placeholder-textSecondary/40 focus:outline-none focus:border-trustGreen/50 text-sm resize-none" placeholder="Paste a short SMS or DM..."></textarea>
+                        </div>
+                        <button onclick="runToolScan('message')" class="w-full py-3 bg-trustGreen/20 text-trustGreen hover:bg-trustGreen/30 hover:text-white rounded-xl font-bold border border-trustGreen/30 transition-colors flex items-center justify-center gap-2"><i data-lucide="search" class="w-4 h-4"></i> Scan Content</button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="tool-message-loading" class="hidden flex-col items-center justify-center py-12">
+                        <i data-lucide="loader-2" class="w-10 h-10 text-trustGreen animate-spin mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-1">Analyzing...</h3>
+                        <p class="text-sm text-textSecondary font-medium animate-pulse">Detecting emotional urgency...</p>
+                    </div>
+
+                    <div id="tool-message-result" class="hidden flex-col gap-4 fade-in">
+                        <div class="bg-trustGreen/10 border border-trustGreen/20 rounded-xl p-6">
+                            <div class="flex items-center gap-3 mb-3 pb-3 border-b border-trustGreen/10">
+                                <i data-lucide="shield-check" class="w-6 h-6 text-trustGreen"></i>
+                                <h3 class="text-trustGreen font-bold text-xl">Status: Likely Safe</h3>
+                            </div>
+                            <p class="text-sm text-textPrimary leading-relaxed">No high-pressure deadlines or malicious links detected.</p>
+                        </div>
+                        <button onclick="resetToolScan('message')" class="w-full py-3 bg-surfaceLight hover:bg-white/10 text-white rounded-lg font-bold transition-colors border border-white/10 text-sm">Scan Another Message</button>
+                    </div>
+                </div>
+
+                <!-- TOOL 3: Fake News Detector -->
+                <div id="tool-news" class="modal-tool-view w-full">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-lg bg-warningAmber/10 flex items-center justify-center text-warningAmber border border-warningAmber/20"><i data-lucide="newspaper" class="w-5 h-5"></i></div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">Fake News Detector</h2>
+                    </div>
+                    <!-- Detailed Description -->
+                    <p class="text-sm text-textSecondary mb-6 ml-14 max-w-md leading-relaxed">
+                        Evaluates the neutrality of text. It flags clickbait algorithms, excessive superlatives, and claims that lack verifiable external citations.
+                    </p>
+                    
+                    <div id="tool-news-input-view" class="w-full">
+                        <div class="mb-4">
+                            <textarea id="tool-news-input" class="w-full h-32 bg-deep/60 border border-surfaceLight rounded-xl p-4 text-textPrimary placeholder-textSecondary/40 focus:outline-none focus:border-warningAmber/50 text-sm resize-none" placeholder="Paste news headline or paragraph..."></textarea>
+                        </div>
+                        <button onclick="runToolScan('news')" class="w-full py-3 bg-warningAmber/20 text-warningAmber hover:bg-warningAmber/30 hover:text-white rounded-xl font-bold border border-warningAmber/30 transition-colors flex items-center justify-center gap-2"><i data-lucide="filter" class="w-4 h-4"></i> Fact-Check Scan</button>
+                    </div>
+
+                    <div id="tool-news-loading" class="hidden flex-col items-center justify-center py-12">
+                        <i data-lucide="loader-2" class="w-10 h-10 text-warningAmber animate-spin mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-1">Analyzing...</h3>
+                        <p class="text-sm text-textSecondary font-medium animate-pulse">Cross-referencing sentiment...</p>
+                    </div>
+
+                    <div id="tool-news-result" class="hidden flex-col gap-4 fade-in">
+                        <div class="bg-warningAmber/10 border border-warningAmber/30 rounded-xl p-6">
+                            <div class="flex items-center gap-3 mb-3 pb-3 border-b border-warningAmber/10">
+                                <i data-lucide="alert-circle" class="w-6 h-6 text-warningAmber"></i>
+                                <h3 class="text-warningAmber font-bold text-xl">Warning: Misleading</h3>
+                            </div>
+                            <p class="text-sm text-textPrimary leading-relaxed">Text uses highly sensational language with zero citations.</p>
+                        </div>
+                        <button onclick="resetToolScan('news')" class="w-full py-3 bg-surfaceLight hover:bg-white/10 text-white rounded-lg font-bold transition-colors border border-white/10 text-sm">Analyze Another Claim</button>
+                    </div>
+                </div>
+
+                <!-- TOOL 4: Code Safety Checker -->
+                <div id="tool-code" class="modal-tool-view w-full">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-lg bg-purpleAccent/10 flex items-center justify-center text-purpleAccent border border-purpleAccent/20"><i data-lucide="braces" class="w-5 h-5"></i></div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">Code Safety</h2>
+                    </div>
+                    <!-- Detailed Description -->
+                    <p class="text-sm text-textSecondary mb-6 ml-14 max-w-md leading-relaxed">
+                        Performs static syntax analysis. Designed specifically to spot payload loaders, obfuscated base64 strings, and reverse-shell commands typical in copied scripts.
+                    </p>
+                    
+                    <div id="tool-code-input-view" class="w-full">
+                        <div class="mb-4">
+                            <textarea id="tool-code-input" class="w-full h-32 bg-deep/60 border border-surfaceLight rounded-xl p-4 text-textPrimary placeholder-textSecondary/40 focus:outline-none focus:border-purpleAccent/50 font-mono text-sm resize-none" placeholder="Paste script or code here"></textarea>
+                        </div>
+                        <button onclick="runToolScan('code')" class="w-full py-3 bg-purpleAccent/20 text-purpleAccent hover:bg-purpleAccent/30 hover:text-white rounded-xl font-bold border border-purpleAccent/30 transition-colors flex items-center justify-center gap-2"><i data-lucide="code-2" class="w-4 h-4"></i> Inspect Syntax Risk</button>
+                    </div>
+
+                    <div id="tool-code-loading" class="hidden flex-col items-center justify-center py-12">
+                        <i data-lucide="loader-2" class="w-10 h-10 text-purpleAccent animate-spin mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-1">Analyzing...</h3>
+                        <p class="text-sm text-textSecondary font-medium animate-pulse">Running static ast check...</p>
+                    </div>
+
+                    <div id="tool-code-result" class="hidden flex-col gap-4 fade-in">
+                        <div class="bg-dangerRed/5 border border-purpleAccent/30 rounded-xl p-6 relative overflow-hidden">
+                            <div class="flex items-center gap-3 mb-3 pb-3 border-b border-purpleAccent/20">
+                                <i data-lucide="shield-alert" class="w-6 h-6 text-dangerRed"></i>
+                                <h3 class="text-dangerRed font-bold text-xl">Danger: Execution Risk</h3>
+                            </div>
+                            <p class="text-sm text-white mb-2">Detected remote payload download intent.</p>
+                        </div>
+                        <button onclick="resetToolScan('code')" class="w-full py-3 bg-surfaceLight hover:bg-white/10 text-white rounded-lg font-bold transition-colors border border-white/10 text-sm">Check Snippet</button>
+                    </div>
+                </div>
+
+                <!-- TOOL 5: Trust Score Analyzer -->
+                <div id="tool-trust" class="modal-tool-view w-full">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white border border-white/20"><i data-lucide="radar" class="w-5 h-5"></i></div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">Trust Indicator</h2>
+                    </div>
+                    <!-- Detailed Description -->
+                    <p class="text-sm text-textSecondary mb-6 ml-14 max-w-md leading-relaxed">
+                        A robust metric analyzer. It dissects headers, contextual clues, and semantic intent to produce a singular Trust metric, visualizing exact failure points.
+                    </p>
+                    
+                    <div id="tool-trust-input-view" class="w-full">
+                        <div class="mb-4">
+                            <textarea id="tool-trust-input" class="w-full h-24 bg-deep/60 border border-surfaceLight rounded-xl p-4 text-textPrimary placeholder-textSecondary/40 focus:outline-none focus:border-white/50 text-sm resize-none" placeholder="Paste entire email or context..."></textarea>
+                        </div>
+                        <button onclick="runToolScan('trust')" class="w-full py-3 bg-white/10 text-white hover:bg-white/20 rounded-xl font-bold border border-white/20 transition-colors flex items-center justify-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i> Generate Trust Profile</button>
+                    </div>
+
+                    <div id="tool-trust-loading" class="hidden flex-col items-center justify-center py-12">
+                        <i data-lucide="loader-2" class="w-10 h-10 text-white animate-spin mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-1">Analyzing...</h3>
+                        <p class="text-sm text-textSecondary font-medium animate-pulse">Calculating holistic trust metrics...</p>
+                    </div>
+
+                    <div id="tool-trust-result" class="hidden flex-col gap-4 fade-in">
+                        <div class="bg-surfaceLight border border-white/10 rounded-xl p-6 flex items-center gap-8">
+                            <div class="text-5xl font-extrabold text-dangerRed">24<span class="text-xl text-textSecondary">/100</span></div>
+                            <div class="flex-grow space-y-4 w-full">
+                                <div class="w-full bg-deep h-2 rounded"><div class="bg-dangerRed h-2 rounded" style="width: 15%"></div></div>
+                            </div>
+                        </div>
+                        <button onclick="resetToolScan('trust')" class="w-full py-3 bg-surfaceLight hover:bg-white/10 text-white rounded-lg font-bold transition-colors border border-white/10 text-sm">Evaluate New Record</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
